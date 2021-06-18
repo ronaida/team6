@@ -8,8 +8,8 @@ function getEncParams(keySeed,ivSeed){
        var myKeySeed = process.env.ENC_KEY;
        var myIvSeed = process.env.ENC_KEY_IV;
     }
-    var cryptkey = crypto.createHash('sha256').update(myKeySeed).digest();
-    var iv = crypto.createHash('sha256').update(myIvSeed).digest().slice(0,16);
+    var cryptkey = crypto.createHash('sha512').update(myKeySeed).digest();
+    var iv = crypto.createHash('sha512').update(myIvSeed).digest().slice(0,16);
 
     return {key:cryptkey, iv:iv};
 }
@@ -17,7 +17,7 @@ function getEncParams(keySeed,ivSeed){
 exports.decrypt = function(encryptdata, keySeed, ivSeed) {
     var keyParams = getEncParams(keySeed,ivSeed);
     encryptdata = Buffer.from(encryptdata, 'base64').toString('binary');
-    var decipher = crypto.createDecipheriv('aes-256-cbc', keyParams.key, keyParams.iv);
+    var decipher = crypto.createDecipheriv('AES-256-GCM', keyParams.key, keyParams.iv);
     var decoded  = decipher.update(encryptdata, 'binary', 'utf8');
     decoded += decipher.final('utf-8');
     return decoded;
@@ -26,7 +26,7 @@ exports.decrypt = function(encryptdata, keySeed, ivSeed) {
 exports.encrypt = function(cleardata, keySeed, ivSeed) {
     var keyParams = getEncParams(keySeed,ivSeed);
 
-    var encipher = crypto.createCipheriv('aes-256-cbc', keyParams.key, keyParams.iv);
+    var encipher = crypto.createCipheriv('AES-256-GCM', keyParams.key, keyParams.iv);
     var encryptdata  = encipher.update(cleardata, 'utf8', 'binary');
 
     encryptdata += encipher.final('binary');

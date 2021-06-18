@@ -36,8 +36,15 @@ const badge = require(path.join(__dirname, 'badge'));
 var badgeHtml = fs.readFileSync(path.join(__dirname, 'static/badge.html'),'utf8');
 
 
+/*********NEWLY ADDED FOR SSL*********/
+const https = require('https');
+var key  = fs.readFileSync('secdojo.key', 'utf8');
+var cert = fs.readFileSync('secdojo.crt', 'utf8');
+var opts = {key: key, cert: cert};
+
 
 //INIT
+app.disable("x-powered-by");
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use(cookieParser()); //lgtm [js/missing-token-validation]
@@ -59,13 +66,29 @@ app.use('/public/open-iconic',express.static(path.join(__dirname, 'node_modules/
 app.use('/public/highlightjs',express.static(path.join(__dirname, 'node_modules/highlightjs')));
 app.use('/public/canvas-confetti',express.static(path.join(__dirname, 'node_modules/canvas-confetti')));
 
+
+/*********NEWLY ADDED FOR SSL*********/
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] == 'http') {
+      return res.redirect(301, 'https://' + req.headers.host + '/');
+  } else {
+      return next();
+  }
+});
+
+
 app.use('/public',express.static(path.join(__dirname, 'public')));
 
 
 app.use('/static', (req, res, next) => {
-    var result = req.url.match(/challengeDefinitions.json/);
-    if (result) {
+    //var result = req.url.match(/challengeDefinitions.json/);
+    var url_ = req.url    
+    if (url_.match(/challengeDefinitions.json/)) {
       return res.status(403).end('403 Forbidden');
+    }
+    //Added this
+    if (url_.match(/blackBelt\/.*.*/)) {
+      return res.status(403).end('403 Forbidden (Cheeky)');
     }
   next();
 });
@@ -273,6 +296,7 @@ app.get('/challenges/solutions/:challengeId', (req,res) => {
   if(util.isNullOrUndefined(challengeId) || util.isAlphanumericOrUnderscore(challengeId) === false){
     return util.apiResponse(req, res, 400, "Invalid challenge id."); 
   }
+  console.log('[*]Getting solution running in ' + __filename);
   var solutionHtml = challenges.getSolution(challengeId);
   res.send(solutionHtml);
 });
@@ -573,8 +597,19 @@ process.on('SIGINT', function() {
   process.exit();
 });
 
+/*********NEWLY ADDED FOR SSL*********/
+var server = https.createServer(opts, app);
+
+server.listen(8443, () => {
+  util.log('Listening on 8443');
+  util.log('Configured url:'+config.dojoUrl);
+  util.log('Is secure:'+config.dojoUrl.startsWith("https")); 
+});
+
+/*
 app.listen(8081,function(){
     util.log('Listening on 8081');
     util.log('Configured url:'+config.dojoUrl);
     util.log('Is secure:'+config.dojoUrl.startsWith("https")); 
 });
+*/

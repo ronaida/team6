@@ -79,7 +79,7 @@
                                 </p>
                                 <a ng-href="#!submitCode/{{moduleId}}/{{challenge.id}}" class="btn btn-info btn-sm" role="button"> Submit Code</a>
                             </span>
-                            <span ng-if="challenge.solution" >
+                            <span ng-if="challenge.solution && challenge.canViewSol" >
                             <br/><br/>
                             <h4>
                                 Solution

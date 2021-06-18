@@ -76,7 +76,7 @@ let getCaptcha = function(req,res){
       p.color(80, 80, 80, 255); 
     
       var img = p.getBase64();
-      var imgbase64 = new Buffer.from(img, 'Base64');
+      var imgbase64 = Buffer.from(img, 'Base64');
       res.writeHead(200, {
           'Content-Type': 'image/png',
           'Cache-Control': 'no-cache, must-revalidate'

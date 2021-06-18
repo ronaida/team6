@@ -43,7 +43,7 @@ else{
 }
 
 
-var mockHash = crypto.createHash('sha256').update(lastChallengeId+mockSalt+masterSalt).digest('base64');
+var mockHash = crypto.createHash('sha512').update(lastChallengeId+mockSalt+masterSalt).digest('base64');
 
 var mockRequest = {
     "body":{
@@ -171,7 +171,7 @@ describe('challengeTests', function() {
               let parts = uriDecoded.split(".");
               assert.equal(2,parts.length,"badge code should be split by .");
               //verify the hash matches
-              let infoHash = crypto.createHash('sha256').update(parts[0]+masterSalt).digest('base64');
+              let infoHash = crypto.createHash('sha512').update(parts[0]+masterSalt).digest('base64');
               assert.equal(infoHash, parts[1]);
               let decoded = Buffer.from(parts[0],"Base64").toString();
               let parsed = JSON.parse(decoded);

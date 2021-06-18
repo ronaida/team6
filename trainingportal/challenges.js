@@ -24,6 +24,7 @@ const validator = require('validator');
 const crypto = require('crypto');
 const aescrypto = require(path.join(__dirname, 'aescrypto'));
 const https = require('https');
+const dotenv = require('dotenv').config();
 
 var modules = {};
 var challengeDefinitions = [];
@@ -61,25 +62,39 @@ function getDefinifionsForModule(moduleId){
     return defs;
 }
 
+function getSolutionStatusForModule(moduleId){
+    return 0;
+}
+
 
 /**
  * Initializes challenges when this module is loaded
  */
 function init(){   
+    console.log(process.env)
     modules = Object.freeze(loadModules());
     for(let moduleId in modules){
         let moduleDefinitions = getDefinifionsForModule(moduleId);
         var modulePath = getModulePath(moduleId);
         for(let level of moduleDefinitions){
             challengeDefinitions.push(level);
-            for(let challenge of level.challenges){
+            console.log("[*]Logging this from" + __filename );
+            for(let challenge of level.challenges){                
+                console.log(challenge.solution);
                 if(!util.isNullOrUndefined(challengeNames[challenge.id])){
                     throw new Error(`Duplicate challenge id: '${challenge.id}'!`);
                 }
                 challengeNames[challenge.id] = challenge.name;
                 descriptions[challenge.id] = path.join(modulePath, challenge.description);
                 if(!util.isNullOrUndefined(challenge.solution)){
-                    solutions[challenge.id] = path.join(modulePath, challenge.solution);
+                    //challenge.solution = "";
+                    console.log("[*]Solution path " + path.join(modulePath, challenge.solution));
+                    if(parseInt(process.env.SOL_ALLOWED)){
+                        solutions[challenge.id] = path.join(modulePath, challenge.solution);
+                        challenge.canViewSol = true;
+                    }else{
+                        challenge.canViewSol = false;
+                    }
                 }
             }
         }
@@ -285,14 +300,14 @@ exports.getBadgeCode = (badge, user) => {
         givenName: user.givenName,
         familyName: user.familyName,
         completion: badge.timestamp,
-        idHash: crypto.createHash('sha256').update(user.id+masterSalt).digest('hex').substr(0,10)
+        idHash: crypto.createHash('sha512').update(user.id+masterSalt).digest('hex').substr(0,10)
     }
 
     let infoStr = JSON.stringify(info);
     let buf = Buffer.from(infoStr);
     let encoded = buf.toString('base64');
 
-    let integrity = crypto.createHash('sha256').update(encoded+masterSalt).digest('base64');
+    let integrity = crypto.createHash('sha512').update(encoded+masterSalt).digest('base64');
    
     let code = `${encoded}.${integrity}`;
     return encodeURIComponent(code);
@@ -307,7 +322,7 @@ exports.verifyBadgeCode = (badgeCode) => {
     let parts = urlDecoded.split(".");
     if(parts.length !== 2) return null;
     //verify the hash matches
-    let vfHash = crypto.createHash('sha256').update(parts[0]+masterSalt).digest('base64');
+    let vfHash = crypto.createHash('sha512').update(parts[0]+masterSalt).digest('base64');
     if(vfHash !== parts[1]) return null;
     try {
         let decoded = Buffer.from(parts[0],"Base64").toString();
@@ -423,8 +438,8 @@ module.exports.apiChallengeCode = async (req) => {
     }
     //either hex or base64 formats should work
     //we're looking at the first 10 characters only for situations where the challenge code may get truncated - pcaps, IPS logs
-    var verificationHashB64 = crypto.createHash('sha256').update(challengeId+req.user.codeSalt+ms).digest('base64').substr(0,10);
-    var verificationHashHex = crypto.createHash('sha256').update(challengeId+req.user.codeSalt+ms).digest('hex').substr(0,10);
+    var verificationHashB64 = crypto.createHash('sha512').update(challengeId+req.user.codeSalt+ms).digest('base64').substr(0,10);
+    var verificationHashHex = crypto.createHash('sha512').update(challengeId+req.user.codeSalt+ms).digest('hex').substr(0,10);
     if(challengeCode.indexOf(verificationHashB64)!==0 && challengeCode.indexOf(verificationHashHex)!==0){
         throw Error("invalidCode");
     } 

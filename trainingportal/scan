@@ -1,0 +1,8 @@
+docker run \
+    --rm \
+    --network="host" \
+    -e SONAR_HOST_URL="http://localhost:9000" \
+    -e SONAR_LOGIN="ae21243445c4c8f66085c81b6d1b03e66a1f56b9" \
+    -v "`pwd`:/usr/src" \
+    sonarsource/sonar-scanner-cli \
+    -Dsonar.projectKey=SecDojo
