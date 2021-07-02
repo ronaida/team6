@@ -203,7 +203,7 @@ app.post('/public/confirm', [
   passport.authenticate('local', { failureRedirect: '/public/authFail.html' })
 ],
 async (req, res) => {
-  console.log("Heyuk! I did it!");
+  return util.apiResponse(req, res, 200, "Authentication successful!");
 });
 
 app.post('/public/ldaplogin', passport.authenticate('ldapauth', { failureRedirect: '/public/authFail.html' }),

@@ -68,11 +68,43 @@ app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function
         $location.url(redirectPath);
     }
 
+
     $scope.refresh = function(id) {
         var img = document.getElementById(id);
         img.src = '';
-        img.src = 'captcha.png?' + new Date().getTime();
+        img.src = '/public/' + 'captcha.png?' + new Date().getTime();
     }
+
+    $scope.doAuth = function (){
+        console.log('doAuth invoked');
+                var username_ = $scope.user.accountId.split('_')[1]
+                var password_ = password.value;
+                var captcha_ = captcha.value.trim();
+                //verifications
+                $scope.isError = false;    
+                $scope.isSuccess = false;    
+                $scope.registerErrorMessage = "";  
+                $http.post("/public/confirm",{username:username_, password:password_, loginCaptcha:captcha_})
+                .then(function(response) {
+                    if(response != null && response.data != null){
+                        if(response.data.status == 200){
+                            $scope.isSuccess = true;
+
+                        }
+                        else{
+                            $scope.isError = true;
+                            $scope.registerErrorMessage = response.data.statusMessage;
+                        }
+      
+                    }
+                },function(errorResponse){
+                    $scope.isError = true;
+                    $scope.registerErrorMessage = "A http error has occurred.";
+                    
+                });
+      
+    }
+
     
     $scope.activityHeartBeat = function(){
         $http.get("/api/activity/heartbeat",window.getAjaxOpts())
@@ -364,6 +396,5 @@ app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
     }
-
 
 }]);

@@ -222,25 +222,25 @@
                               </div>
                   
                               <div class="form-group">
-                                <form action="/public/confirm" method="POST">
+                                <!--<form action="/public/confirm" method="POST">-->
                                     <div class="form-group">
                                       <label for="password">Password:</label>
                                       <input type="password" class="form-control" id="password" name="password" autocomplete="off">
                                     </div>
                                     <div class="form-group">
                                         <label for="captchaImg">Captcha image:</label>
-                                        <img src="/public/captcha.png" id="loginCaptchaImg"/>
+                                        <img src="/public/captcha.png" id="authCaptchaImg"/>
                                         <a href="#">
-                                            <span class="oi oi-reload" ng-click="refresh('loginCaptchaImg')"></span>
+                                            <span class="oi oi-reload" ng-click="refresh('authCaptchaImg')"></span>
                                          </a>
                                     </div>
                                     <div class="form-group">
                                         <label for="captcha">Captcha value:</label>
-                                        <input type="captcha" class="form-control" id="loginCaptcha" name="loginCaptcha">
+                                        <input type="captcha" class="form-control" id="captcha" name="captcha">
                                     </div>
-                                    <input type="hidden" ng-value="user.accountId.split('_')[1]" id="username" name="username">                                  
-                                    <button type="submit" class="btn btn-primary">Confirm</button>
-                                  </form>
+                                    <!--<input type="hidden" ng-value="user.accountId.split('_')[1]" id="username" name="username">-->                                  
+                                    <button type="submit" class="btn btn-primary" ng-click="doAuth()">Confirm</button>
+                                  <!--</form>-->
                               </div>
                           </div>
                   
