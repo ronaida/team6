@@ -306,6 +306,7 @@ let processAuthCallback = async(profileId, givenName, familyName, email, cb) => 
                 familyName: familyName, 
                 givenName: givenName,
                 teamId: teamId,
+                userType:0,
                 level:0
             };
             await db.getPromise(db.insertUser, user);
@@ -324,6 +325,7 @@ let processAuthCallback = async(profileId, givenName, familyName, email, cb) => 
         util.log(error);
         cb(error, null);
     }
+    return user;
 }
 
 //Returns the google strategy settings

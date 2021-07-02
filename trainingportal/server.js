@@ -192,7 +192,9 @@ app.post('/public/locallogin', [
   auth.checkCaptchaOnLogin,
   passport.authenticate('local', { failureRedirect: '/public/authFail.html' })
 ],
-function(req, res) {
+async (req, res) => {
+  let user = await db.getPromise(db.getUser, 'Local_' + req.body.username);
+  console.log(user);
   res.redirect('/main');
 });
 

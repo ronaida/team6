@@ -58,6 +58,7 @@ app.directive('highlightCode', [ function(){
 
 app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function($scope, $http, $location, dataSvc) {
     
+    console.log($scope.user);
 
     //redirect the user to the previous page if they got logged out
     var redirectPath = window.sessionStorage.getItem("redirectPath");

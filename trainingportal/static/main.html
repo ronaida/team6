@@ -71,7 +71,7 @@
         </nav>
             
 
-            <div class="alert alert-warning" id="teamAlert" ng-if="user.teamId==null || user.teamId==0">
+            <div class="alert alert-warning" id="teamAlert" ng-if="!user.userType && (user.teamId==null || user.teamId==0)">
                 <a class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 You have not joined a team yet! <a href="#" class="alert-link" data-toggle="modal" data-target="#teamModal">Join an existing team or create a team for yourself.</a>
             </div>
@@ -82,6 +82,7 @@
             </div>
        
              <!-- This is where the main view goes -->
+            <div id="container" ng-if="!user.userType">
             <div style="margin:20px" ng-view></div>
 
 
@@ -187,6 +188,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
+            <div ng-if="user.userType">
+                <h1>Welcome {{fullName}}</h1>
             </div>
         
     </div> 
