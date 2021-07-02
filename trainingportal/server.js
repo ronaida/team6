@@ -198,6 +198,14 @@ async (req, res) => {
   res.redirect('/main');
 });
 
+app.post('/public/confirm', [
+  auth.checkCaptchaOnLogin,
+  passport.authenticate('local', { failureRedirect: '/public/authFail.html' })
+],
+async (req, res) => {
+  console.log("Heyuk! I did it!");
+});
+
 app.post('/public/ldaplogin', passport.authenticate('ldapauth', { failureRedirect: '/public/authFail.html' }),
 function(req, res) {
   res.redirect('/main');

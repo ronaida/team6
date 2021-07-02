@@ -67,6 +67,12 @@ app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function
         window.sessionStorage.removeItem("redirectPath");
         $location.url(redirectPath);
     }
+
+    $scope.refresh = function(id) {
+        var img = document.getElementById(id);
+        img.src = '';
+        img.src = 'captcha.png?' + new Date().getTime();
+    }
     
     $scope.activityHeartBeat = function(){
         $http.get("/api/activity/heartbeat",window.getAjaxOpts())
