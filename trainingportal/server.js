@@ -194,7 +194,6 @@ app.post('/public/locallogin', [
 ],
 async (req, res) => {
   let user = await db.getPromise(db.getUser, 'Local_' + req.body.username);
-  console.log(user);
   res.redirect('/main');
 });
 
@@ -203,6 +202,8 @@ app.post('/public/confirm', [
   passport.authenticate('local', { failureRedirect: '/public/authFail.html' })
 ],
 async (req, res) => {
+  process.env.SOL_ALLOWED = 0 || parseInt(req.body.solStatus);
+  util.log('Viewing solutions is now: ' + ['disabled', 'enabled'][process.env.SOL_ALLOWED]); 
   return util.apiResponse(req, res, 200, "Authentication successful!");
 });
 

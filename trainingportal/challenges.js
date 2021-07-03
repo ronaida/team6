@@ -71,25 +71,20 @@ function getSolutionStatusForModule(moduleId){
  * Initializes challenges when this module is loaded
  */
 function init(){   
-    console.log(process.env)
     modules = Object.freeze(loadModules());
     for(let moduleId in modules){
         let moduleDefinitions = getDefinifionsForModule(moduleId);
         var modulePath = getModulePath(moduleId);
         for(let level of moduleDefinitions){
             challengeDefinitions.push(level);
-            console.log("[*]Logging this from" + __filename );
             for(let challenge of level.challenges){                
-                console.log(challenge.solution);
                 if(!util.isNullOrUndefined(challengeNames[challenge.id])){
                     throw new Error(`Duplicate challenge id: '${challenge.id}'!`);
                 }
                 challengeNames[challenge.id] = challenge.name;
                 descriptions[challenge.id] = path.join(modulePath, challenge.description);
                 if(!util.isNullOrUndefined(challenge.solution)){
-                    //challenge.solution = "";
-                    console.log("[*]Solution path " + path.join(modulePath, challenge.solution));
-                    if(parseInt(process.env.SOL_ALLOWED)){
+                    if(parseInt(process.env.SOL_ALLOWED) == 1){
                         solutions[challenge.id] = path.join(modulePath, challenge.solution);
                         challenge.canViewSol = true;
                     }else{

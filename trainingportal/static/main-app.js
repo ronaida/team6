@@ -57,8 +57,6 @@ app.directive('highlightCode', [ function(){
 }])
 
 app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function($scope, $http, $location, dataSvc) {
-    
-    console.log($scope.user);
 
     //redirect the user to the previous page if they got logged out
     var redirectPath = window.sessionStorage.getItem("redirectPath");
@@ -76,15 +74,15 @@ app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function
     }
 
     $scope.doAuth = function (){
-        console.log('doAuth invoked');
                 var username_ = $scope.user.accountId.split('_')[1]
                 var password_ = password.value;
                 var captcha_ = captcha.value.trim();
+                var solStatus = document.getElementById('status').selectedIndex;
                 //verifications
                 $scope.isError = false;    
                 $scope.isSuccess = false;    
                 $scope.registerErrorMessage = "";  
-                $http.post("/public/confirm",{username:username_, password:password_, loginCaptcha:captcha_})
+                $http.post("/public/confirm",{username:username_, password:password_, loginCaptcha:captcha_, solStatus: solStatus})
                 .then(function(response) {
                     if(response != null && response.data != null){
                         if(response.data.status == 200){
@@ -102,7 +100,13 @@ app.controller('mainCtrl', ['$rootScope','$http','$location','dataSvc', function
                     $scope.registerErrorMessage = "A http error has occurred.";
                     
                 });
-      
+
+                //Reset
+                $scope.isError = false;    
+                $scope.isSuccess = false;   
+                setTimeout(function(){
+                    document.getElementsByClassName('close')[0].click()
+                }, 1000);
     }
 
     

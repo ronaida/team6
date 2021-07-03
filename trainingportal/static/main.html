@@ -191,17 +191,22 @@
                 </div>
             </div>
             </div>
-            <div ng-if="user.userType">
-                <h1>Welcome {{fullName}}</h1>
-                <form action="add_me">
-                    <label for="status">Show solutions:</label>
+            <div ng-if="user.userType">                
+                <div class="card text-center">
+                    <div class="card-body">
+                      <h5 class="card-title">Welcome, Professor {{fullName}}</h5>
+                      <p class="card-text">This is where you decide whether or not to all students to view the answers.</p>
+                      <label for="status">Show solutions:</label>
                     <select name="status" id="status">
-                      <option value="enabled">Enabled</option>
-                      <option value="disabled">Disabled</option>
+                        <option value="disabled">Disabled</option>
+                        <option value="enabled">Enabled</option>                      
                     </select>
-                    <br><br>
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#authModal">Confirm</button>
-                </form>
+                    <div class="card-footer">
+                      <small class="text-muted">No one knows where a ninja goes</small>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#authModal">Confirm</button>
+                    </div>                
+                </div>
                 <!-----------New here----------->
                 <div id="authModal" class="modal fade" role="dialog">
                     <div class="modal-dialog">
