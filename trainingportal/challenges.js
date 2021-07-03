@@ -471,3 +471,23 @@ module.exports.insertChallengeEntry = async (user,curChallengeObj, moduleId) => 
             }
     }   
 }
+
+exports.updateSolutionState = function(){   
+    modules = Object.freeze(loadModules());
+    for(let moduleId in modules){
+        let moduleDefinitions = getDefinifionsForModule(moduleId);
+        var modulePath = getModulePath(moduleId);
+        for(let level of moduleDefinitions){
+            for(let challenge of level.challenges){                
+                if(!util.isNullOrUndefined(challenge.solution)){
+                    if(parseInt(process.env.SOL_ALLOWED) == 1){
+                        solutions[challenge.id] = path.join(modulePath, challenge.solution);
+                        challenge.canViewSol = true;
+                    }else{
+                        challenge.canViewSol = false;
+                    }
+                }
+            }
+        }
+    }
+}

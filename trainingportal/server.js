@@ -204,6 +204,7 @@ app.post('/public/confirm', [
 async (req, res) => {
   process.env.SOL_ALLOWED = 0 || parseInt(req.body.solStatus);
   util.log('Viewing solutions is now: ' + ['disabled', 'enabled'][process.env.SOL_ALLOWED]); 
+  challenges.updateSolutionState();
   return util.apiResponse(req, res, 200, "Authentication successful!");
 });
 
