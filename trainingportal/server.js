@@ -25,6 +25,9 @@ const app = express();
 const uid = require('uid-safe');
 const validator = require('validator');
 
+
+const { spawn } = require('child_process');
+
 const db = require(path.join(__dirname, 'db'));
 const auth = require(path.join(__dirname, 'auth'));
 const util = require(path.join(__dirname, 'util'));
@@ -612,16 +615,9 @@ process.on('SIGINT', function() {
 /*********NEWLY ADDED FOR SSL*********/
 var server = https.createServer(opts, app);
 
-server.listen(8443, () => {
-  util.log('Listening on 8443');
+server.listen(config.dojoPort, () => {
+  util.log('Listening on ' +config.dojoPort);
   util.log('Configured url:'+config.dojoUrl);
   util.log('Is secure:'+config.dojoUrl.startsWith("https")); 
+  var insecinc = spawn('docker', ['run', '-p', '8080:8080', '-e', 'CHALLENGE_MASTER_SALT=$CHALLENGE_MASTER_SALT', 'securecodingdojo/insecure.inc'])
 });
-
-/*
-app.listen(8081,function(){
-    util.log('Listening on 8081');
-    util.log('Configured url:'+config.dojoUrl);
-    util.log('Is secure:'+config.dojoUrl.startsWith("https")); 
-});
-*/
