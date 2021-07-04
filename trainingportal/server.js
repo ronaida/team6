@@ -619,5 +619,9 @@ server.listen(config.dojoPort, () => {
   util.log('Listening on ' +config.dojoPort);
   util.log('Configured url:'+config.dojoUrl);
   util.log('Is secure:'+config.dojoUrl.startsWith("https")); 
-  var insecinc = spawn('docker', ['run', '-p', '8080:8080', '-e', 'CHALLENGE_MASTER_SALT=$CHALLENGE_MASTER_SALT', 'securecodingdojo/insecure.inc'])
+  var insecincpull = spawn('docker', ['pull', 'securecodingdojo/insecure.inc'])
+  insecincpull.on('exit', function() {
+    util.log('Finished checking Insecure.inc')
+    var insecinc = spawn('docker', ['run', '-p', '8080:8080', '-e', 'CHALLENGE_MASTER_SALT=$CHALLENGE_MASTER_SALT', 'securecodingdojo/insecure.inc'])
+  });  
 });
