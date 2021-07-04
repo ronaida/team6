@@ -8,8 +8,8 @@ function getEncParams(keySeed,ivSeed){
        var myKeySeed = process.env.ENC_KEY;
        var myIvSeed = process.env.ENC_KEY_IV;
     }
-    var cryptkey = crypto.createHash('sha512').update(myKeySeed).digest();
-    var iv = crypto.createHash('sha512').update(myIvSeed).digest().slice(0,16);
+    var cryptkey = crypto.createHash('sha256').update(myKeySeed).digest();
+    var iv = crypto.createHash('sha256').update(myIvSeed).digest().slice(0,16);
 
     return {key:cryptkey, iv:iv};
 }
